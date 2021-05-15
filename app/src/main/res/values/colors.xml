@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!--    MOVIE UNION COLOR-->
+    <color name="black_retro">#0D0606</color>
+    <color name="red_retro">#C0030A</color>
+    <color name="red_blood_retro">#5D0907</color>
+    <color name="yellow_light_retro">#DB9F2C</color>
+    <color name="yellow_dark_retro">#A85E25</color>
+    <color name="grey_light_retro">#9CAFBB</color>
+    <color name="grey_dark_retro">#4C4B4E</color>
+    <color name="white_solid_retro">#FEFEFE</color>
+    <color name="white_retro">#E6DBDB</color>
+</resources>
