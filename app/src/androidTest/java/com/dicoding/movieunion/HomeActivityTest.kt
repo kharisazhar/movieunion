@@ -30,7 +30,6 @@ class HomeActivityTest {
         onView(withId(R.id.tvShowMoreTVSHow)).check(matches(isDisplayed()))
         onView(withId(R.id.rvMovie)).check(matches(isDisplayed()))
         onView(withId(R.id.rvTVShow)).check(matches(isDisplayed()))
-        Thread.sleep(1000)
     }
 
     @Test
@@ -51,7 +50,6 @@ class HomeActivityTest {
         checkDetailItemMovie()
 
         onView(isRoot()).perform(ViewActions.pressBack())
-        Thread.sleep(1000)
     }
 
     @Test
@@ -71,7 +69,6 @@ class HomeActivityTest {
 
         checkDetailItemTVSHow()
         onView(isRoot()).perform(ViewActions.pressBack())
-        Thread.sleep(1000)
     }
 
     @Test
