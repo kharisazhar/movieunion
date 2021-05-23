@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_retro"
-    tools:context=".feature.detail.presentation.DetailMovieActivity">
+    tools:context=".feature.detail_movie.presentation.DetailMovieActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

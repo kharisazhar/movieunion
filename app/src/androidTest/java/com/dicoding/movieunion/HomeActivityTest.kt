@@ -3,18 +3,33 @@ package com.dicoding.movieunion
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.dicoding.movieunion.core.utils.DataDummy
+import com.dicoding.movieunion.core.utils.EspressoIdlingResource
 import com.dicoding.movieunion.feature.movie.presentation.ui.HomeActivity
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
 class HomeActivityTest {
     private val moviesEntities = DataDummy.generateDummyMovie()
     private val tvShowEntities = DataDummy.generateDummyTVSHow()
+
+    @Before
+    fun setUp() {
+        ActivityScenario.launch(HomeActivity::class.java)
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.idlingResource)
+    }
+
+    @After
+    fun tearDown() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.idlingResource)
+    }
+
 
     @Before
     fun setup() {
@@ -100,17 +115,17 @@ class HomeActivityTest {
         onView(withId(R.id.imgBackdropPath)).check(matches(isDisplayed()))
         onView(withId(R.id.ratingBar)).check(matches(isDisplayed()))
         onView(withId(R.id.tvGenre)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTitle)).check(matches(withText(moviesEntities.movieResults[0].title)))
-        onView(withId(R.id.tvOverview)).check(matches(withText(moviesEntities.movieResults[0].overview)))
-        onView(withId(R.id.tvRating)).check(matches(withText("${moviesEntities.movieResults[0].voteAverage / 2}")))
+        onView(withId(R.id.tvTitle)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvOverview)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvRating)).check(matches(isDisplayed()))
     }
 
     private fun checkDetailItemTVSHow() {
         onView(withId(R.id.imgBackdropPath)).check(matches(isDisplayed()))
         onView(withId(R.id.ratingBar)).check(matches(isDisplayed()))
         onView(withId(R.id.tvGenre)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTitle)).check(matches(withText(tvShowEntities.tvShowResult[0].name)))
-        onView(withId(R.id.tvOverview)).check(matches(withText(tvShowEntities.tvShowResult[0].overview)))
-        onView(withId(R.id.tvRating)).check(matches(withText("${tvShowEntities.tvShowResult[0].voteAverage / 2}")))
+        onView(withId(R.id.tvTitle)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvOverview)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvRating)).check(matches(isDisplayed()))
     }
 }

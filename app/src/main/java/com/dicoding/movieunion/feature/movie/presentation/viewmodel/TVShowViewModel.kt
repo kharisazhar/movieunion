@@ -6,37 +6,40 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.Either
-import com.dicoding.movieunion.feature.movie.domain.entities.MovieEntity
-import com.dicoding.movieunion.feature.movie.domain.usecases.MovieUseCase
+import com.dicoding.movieunion.feature.movie.domain.entities.TVShowEntity
+import com.dicoding.movieunion.feature.movie.domain.usecases.TVUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-interface MovieViewModelContract {
-    fun getMovies()
+
+interface TVShowViewModelContract {
+    fun getTVPopular()
 }
 
-class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), MovieViewModelContract {
+class TVShowViewModel(private var tvUseCase: TVUseCase) : ViewModel(),
+    TVShowViewModelContract {
 
-    private val _movie = MediatorLiveData<MovieEntity?>()
-    val movie: LiveData<MovieEntity?>
-        get() = _movie
+    private val _tvPopular = MediatorLiveData<TVShowEntity?>()
+    val tvPopular: LiveData<TVShowEntity?>
+        get() = _tvPopular
 
     private val _error = MediatorLiveData<BaseErrorResponse?>()
     val error: LiveData<BaseErrorResponse?>
         get() = _error
 
     init {
-        getMovies()
+        getTVPopular()
     }
 
-    override fun getMovies() {
+
+    override fun getTVPopular() {
         viewModelScope.launch {
-            val result = movieUseCase.getMovies()
+            val result = tvUseCase.getTVPopular()
             withContext(Dispatchers.Main) {
                 when (result) {
                     is Either.Left -> {
-                        _movie.postValue(result.value)
+                        _tvPopular.postValue(result.value)
                     }
                     is Either.Right -> {
                         _error.postValue(result.value)

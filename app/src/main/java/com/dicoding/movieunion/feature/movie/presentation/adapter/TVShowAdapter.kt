@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.core.utils.OnItemClickListener
 import com.dicoding.movieunion.databinding.ItemMovieBinding
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
@@ -43,7 +44,7 @@ class TVShowAdapter : RecyclerView.Adapter<TVShowAdapter.MovieViewHolder>() {
                 }
 
                 Glide.with(itemView.context)
-                    .load("https://image.tmdb.org/t/p/w342" + tvShow.posterPath)
+                    .load("${BuildConfig.BASE_URL_IMAGE}w342" + tvShow.posterPath)
                     .into(imgPoster)
             }
         }

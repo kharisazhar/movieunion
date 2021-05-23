@@ -1,5 +1,6 @@
 package com.dicoding.movieunion.core.utils
 
+import com.dicoding.movieunion.feature.detail_movie.domain.entities.*
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieEntity
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowEntity
@@ -433,6 +434,76 @@ object DataDummy {
             ),
             totalPages = 500,
             totalResults = 10000,
+        )
+    }
+
+    fun generateDummyMovieDetail(): MovieDetailEntity {
+        return MovieDetailEntity(
+            adult = false,
+            backdropPath = "/6ELCZlTA5lGUops70hKdB83WJxH.jpg\"",
+            belongsToCollection = "",
+            budget = 20000000,
+            genres = listOf(
+                Genre(28, "Action"),
+                Genre(14, "Fantasy"),
+                Genre(12, "Adventure"),
+            ),
+            homepage = "https://www.mortalkombatmovie.net",
+            id = 460465,
+            imdbId = "tt0293429",
+            originalLanguage = "en",
+            originalTitle = "Mortal Kombat",
+            overview = "Washed-up MMA fighter Cole Young, unaware of his heritage, and hunted by Emperor Shang Tsung's best warrior, Sub-Zero, seeks out and trains with Earth's greatest champions as he prepares to stand against the enemies of Outworld in a high stakes battle for the universe.",
+            popularity = 2437.17,
+            posterPath = "/nkayOAUBUu4mMvyNf9iHSUiPjF1.jpg",
+            productionCompanies = listOf(
+                ProductionCompany(
+                    76907,
+                    "/wChlWsVgwSd4ZWxTIm8PTEcaESz.png",
+                    "Atomic Monster",
+                    "US"
+                )
+            ),
+            productionCountries = listOf(ProductionCountry("US", "United States of America")),
+            releaseDate = "2021-04-07",
+            revenue = 1,
+            runtime = 1,
+            spokenLanguages = listOf(SpokenLanguage("", "", "")),
+            status = "",
+            tagline = "",
+            title = "",
+            video = false,
+            voteAverage = 1.0,
+            voteCount = 1
+        )
+    }
+
+    fun generateDummyTVDetail(): TVDetailEntity {
+        return TVDetailEntity(
+            backdropPath = "",
+            createdBy = listOf(CreatedBy("", 1, 1, "", "")),
+            episodeRunTime = listOf(1, 1),
+            firstAirDate = "",
+            genres = listOf(TVGenre(1, "ac")),
+            homepage = "",
+            id = 1,
+            inProduction = false,
+            languages = listOf("en"),
+            lastAirDate = "",
+            lastEpisodeToAir = LastEpisodeToAir("1", 1, 1, "", "", "", 1, "", 1.0, 1),
+            name = "",
+            networks = listOf(Network(1, "", "", "")),
+            nextEpisodeToAir = "",
+            numberOfEpisodes = 1,
+            numberOfSeasons = 1,
+            originCountry = listOf("en"),
+            originalLanguage = "en",
+            originalName = "",
+            overview = "s",
+            popularity = 1.0,
+            posterPath = "",
+            voteAverage = 2.0,
+            voteCount = 1
         )
     }
 }
