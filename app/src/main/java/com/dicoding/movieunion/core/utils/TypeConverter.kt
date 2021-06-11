@@ -6,15 +6,14 @@ import com.google.gson.reflect.TypeToken
 
 class TypeConverter {
     @TypeConverter
-    fun fromStringInt(value: String): List<Int>? {
-        val listType = object : TypeToken<List<Int>>() {}.type
-        return Gson().fromJson<List<Int>>(value, listType)
+    fun fromStringToListString(value: String): List<String>? {
+        val listType = object : TypeToken<List<String>>() {}.type
+        return Gson().fromJson<List<String>>(value, listType)
     }
 
     @TypeConverter
-    fun fromListInt(list: List<Int>): String {
+    fun fromListStringToString(list: List<String>): String {
         val gson = Gson()
         return gson.toJson(list)
     }
-
 }

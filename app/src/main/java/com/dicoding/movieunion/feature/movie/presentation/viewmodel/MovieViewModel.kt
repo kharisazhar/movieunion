@@ -59,7 +59,9 @@ class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), Movi
         viewModelScope.launch {
             val result = movieUseCase.getFavoriteMovie()
             result?.collect {
-                _movieFavorite.postValue(it)
+                withContext(Dispatchers.Main) {
+                    _movieFavorite.postValue(it)
+                }
             }
         }
     }

@@ -15,17 +15,21 @@ import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailE
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.presentation.viewmodel.MovieDetailViewModel
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
+import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
+import com.dicoding.movieunion.feature.movie.presentation.viewmodel.TVShowViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailMovieActivity : AppCompatActivity() {
     private lateinit var activityDetailMovieBinding: ActivityDetailMovieBinding
     private var genre: String = ""
     private var isFavorite = false
-    private var movieId: Int = -1
+    private var id: Int = -1
+    private var type: String? = ""
 
     private val movieDetailViewModel: MovieDetailViewModel by viewModel()
     private val movieViewModel: MovieViewModel by viewModel()
+    private val tvShowViewModel: TVShowViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +38,15 @@ class DetailMovieActivity : AppCompatActivity() {
         activityDetailMovieBinding = ActivityDetailMovieBinding.inflate(layoutInflater)
         setContentView(activityDetailMovieBinding.root)
 
-        val type = intent.getStringExtra(EXTRA_TYPE)
-        movieId = intent.getIntExtra(EXTRA_ID, 0)
+        type = intent.getStringExtra(EXTRA_TYPE)
+        id = intent.getIntExtra(EXTRA_ID, 0)
 
         if (type == MOVIE) {
-            movieDetailViewModel.getMovieDetail(movieId)
+            movieDetailViewModel.getMovieDetail(id)
+            initObserveFavoriteMovie()
         } else if (type == TV_SHOW) {
-            movieDetailViewModel.getTVDetail(movieId)
+            movieDetailViewModel.getTVDetail(id)
+            initObserveFavoriteTVShow()
         }
 
         activityDetailMovieBinding.btnBackDetail.setOnClickListener {
@@ -60,6 +66,36 @@ class DetailMovieActivity : AppCompatActivity() {
 
     }
 
+    private fun initObserveFavoriteMovie() {
+        movieViewModel.movieFavorite.observe(this, { movies ->
+            val data = movies?.filter {
+                it.id == id
+            }
+            isFavorite = if (data!!.isNotEmpty()) {
+                data[0].isFavorite!!
+            } else {
+                false
+            }
+
+            initViewFavoriteButton()
+        })
+    }
+
+    private fun initObserveFavoriteTVShow() {
+        tvShowViewModel.tvShowsFavorite.observe(this, { movies ->
+            val data = movies?.filter {
+                it.id == id
+            }
+            isFavorite = if (data!!.isNotEmpty()) {
+                data[0].isFavorite!!
+            } else {
+                false
+            }
+
+            initViewFavoriteButton()
+        })
+    }
+
     private fun setFavoriteMovie(movie: MovieDetailEntity) {
         activityDetailMovieBinding.fabFavorite.setOnClickListener {
             if (!isFavorite) {
@@ -70,6 +106,20 @@ class DetailMovieActivity : AppCompatActivity() {
                 isFavorite = false
                 activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_inactive)
                 movieDetailViewModel.deleteFavoriteMovie(movie.id)
+            }
+        }
+    }
+
+    private fun setFavoriteTVShow(tvShowDetailEntity: TVDetailEntity) {
+        activityDetailMovieBinding.fabFavorite.setOnClickListener {
+            if (!isFavorite) {
+                isFavorite = true
+                activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_active)
+                insertTVShowFavorite(tvShowDetailEntity)
+            } else {
+                isFavorite = false
+                activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_inactive)
+                movieDetailViewModel.deleteFavoriteTVShow(tvShowDetailEntity.id)
             }
         }
     }
@@ -95,41 +145,53 @@ class DetailMovieActivity : AppCompatActivity() {
         )
     }
 
+    private fun insertTVShowFavorite(tvDetailEntity: TVDetailEntity) {
+        movieDetailViewModel.insertFavoriteTVShow(
+            TVShowResult(
+                id = tvDetailEntity.id,
+                backdropPath = tvDetailEntity.backdropPath,
+                firstAirDate = tvDetailEntity.firstAirDate,
+                name = tvDetailEntity.name,
+                originCountry = tvDetailEntity.originCountry,
+                originalLanguage = tvDetailEntity.originalLanguage,
+                originalName = tvDetailEntity.originalName,
+                overview = tvDetailEntity.overview,
+                popularity = tvDetailEntity.popularity,
+                posterPath = tvDetailEntity.posterPath,
+                voteAverage = tvDetailEntity.voteAverage,
+                voteCount = tvDetailEntity.voteCount,
+                isFavorite = true
+            )
+        )
+    }
+
     private fun initObserve() {
-        movieDetailViewModel.movieDetail.observe(this, {
-            it?.let {
-                setDetailMovie(it)
-                setFavoriteMovie(it)
+        when (type) {
+            MOVIE -> {
+                movieDetailViewModel.setMovieDetailId(id)
+                movieDetailViewModel.movieDetail.observe(this, {
+                    it?.let {
+                        setDetailMovie(it)
+                        setFavoriteMovie(it)
+                    }
+                })
+                movieDetailViewModel.errorDetailMovie.observe(this, {
+                    Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
+                })
             }
-        })
-
-        movieDetailViewModel.tvDetail.observe(this, {
-            it?.let {
-                setDetailTVShow(it)
+            TV_SHOW -> {
+                movieDetailViewModel.setTVDetailId(id)
+                movieDetailViewModel.tvDetail.observe(this, {
+                    it?.let {
+                        setDetailTVShow(it)
+                        setFavoriteTVShow(it)
+                    }
+                })
+                movieDetailViewModel.errorDetailTV.observe(this, {
+                    Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
+                })
             }
-        })
-
-        movieDetailViewModel.errorDetailMovie.observe(this, {
-            Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
-        })
-
-        movieDetailViewModel.errorDetailTV.observe(this, {
-            Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
-        })
-
-        movieViewModel.movieFavorite.observe(this, { movies ->
-            val data = movies?.filter {
-                it.id == movieId
-            }
-            isFavorite = if (data!!.isNotEmpty()) {
-                data[0].isFavorite!!
-            } else {
-                false
-            }
-
-            initViewFavoriteButton()
-        })
-
+        }
     }
 
     private fun setDetailMovie(movieDetailEntity: MovieDetailEntity) {

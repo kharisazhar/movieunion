@@ -2,6 +2,7 @@ package com.dicoding.movieunion.feature.movie.data.repositories
 
 import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.core.utils.DataDummy
+import com.dicoding.movieunion.feature.movie.data.database.TVShowDao
 import com.dicoding.movieunion.feature.movie.data.network.TVNetworkService
 import com.dicoding.movieunion.feature.movie.domain.repositories.TVRepositories
 import kotlinx.coroutines.runBlocking
@@ -9,11 +10,13 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import retrofit2.Response
 
 class TVRepositoriesTest {
 
-    private var tvNetworkService = Mockito.mock(TVNetworkService::class.java)
+    private var tvNetworkService = mock(TVNetworkService::class.java)
+    private var tvShowDao = mock(TVShowDao::class.java)
 
     private lateinit var tvRepositories: TVRepositories
 
@@ -21,7 +24,7 @@ class TVRepositoriesTest {
 
     @Before
     fun setUp() {
-        tvRepositories = TVRepositoriesImpl(tvNetworkService)
+        tvRepositories = TVRepositoriesImpl(tvNetworkService, tvShowDao)
     }
 
     @Test

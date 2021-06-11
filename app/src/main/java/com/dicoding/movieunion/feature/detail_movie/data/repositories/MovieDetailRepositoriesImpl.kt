@@ -6,10 +6,16 @@ import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailE
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.repositories.MovieDetailRepositories
 import com.dicoding.movieunion.feature.movie.data.database.MovieDao
+import com.dicoding.movieunion.feature.movie.data.database.TVShowDao
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
+import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 import retrofit2.Response
 
-class MovieDetailRepositoriesImpl(private val movieDetailNetworkService: MovieDetailNetworkService, private val movieDao: MovieDao) :
+class MovieDetailRepositoriesImpl(
+    private val movieDetailNetworkService: MovieDetailNetworkService,
+    private val movieDao: MovieDao,
+    private val tvShowDao: TVShowDao
+) :
     MovieDetailRepositories {
     override suspend fun getMovieDetail(id: Int): Response<MovieDetailEntity> {
         return movieDetailNetworkService.getMovieDetail(id, BuildConfig.KEY_AUTH)
@@ -25,5 +31,13 @@ class MovieDetailRepositoriesImpl(private val movieDetailNetworkService: MovieDe
 
     override suspend fun deleteFavoriteMovie(id: Int) {
         movieDao.deleteFavoriteMovie(id)
+    }
+
+    override suspend fun insertFavoriteTVShow(tvShow: TVShowResult) {
+        tvShowDao.insertFavoriteTVShow(tvShow)
+    }
+
+    override suspend fun deleteFavoriteTVShow(id: Int) {
+        tvShowDao.deleteFavoriteTVShow(id)
     }
 }

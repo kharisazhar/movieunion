@@ -7,6 +7,7 @@ import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailE
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.repositories.MovieDetailRepositories
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
+import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 
 class MovieDetailUseCase(private val movieDetailRepositories: MovieDetailRepositories) {
     suspend fun getMovieDetail(id: Int): Either<MovieDetailEntity, BaseErrorResponse> {
@@ -74,6 +75,18 @@ class MovieDetailUseCase(private val movieDetailRepositories: MovieDetailReposit
     suspend fun deleteFavoriteMovie(id: Int) {
         try {
             movieDetailRepositories.deleteFavoriteMovie(id)
+        } catch (e: Exception) {
+
+        }
+    }
+
+    suspend fun insertFavoriteTVShow(tvShow: TVShowResult) {
+        movieDetailRepositories.insertFavoriteTVShow(tvShow)
+    }
+
+    suspend fun deleteFavoriteTVShow(id: Int) {
+        try {
+            movieDetailRepositories.deleteFavoriteTVShow(id)
         } catch (e: Exception) {
 
         }

@@ -6,6 +6,7 @@ import com.dicoding.movieunion.feature.detail_movie.data.network.MovieDetailNetw
 import com.dicoding.movieunion.feature.detail_movie.data.repositories.MovieDetailRepositoriesImpl
 import com.dicoding.movieunion.feature.detail_movie.domain.repositories.MovieDetailRepositories
 import com.dicoding.movieunion.feature.movie.data.database.MovieDao
+import com.dicoding.movieunion.feature.movie.data.database.TVShowDao
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -17,6 +18,7 @@ class DetailMovieRepositoriesTest {
 
     private var movieDetailNetworkService = Mockito.mock(MovieDetailNetworkService::class.java)
     private var movieDao = Mockito.mock(MovieDao::class.java)
+    private var tvShowDao = Mockito.mock(TVShowDao::class.java)
 
     private lateinit var movieDetailRepositories: MovieDetailRepositories
 
@@ -25,7 +27,8 @@ class DetailMovieRepositoriesTest {
 
     @Before
     fun setUp() {
-        movieDetailRepositories = MovieDetailRepositoriesImpl(movieDetailNetworkService, movieDao)
+        movieDetailRepositories =
+            MovieDetailRepositoriesImpl(movieDetailNetworkService, movieDao, tvShowDao)
     }
 
     @Test

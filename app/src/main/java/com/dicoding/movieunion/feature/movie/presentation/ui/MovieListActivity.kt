@@ -53,9 +53,7 @@ class MovieListActivity : AppCompatActivity() {
                     result?.let {
                         setRecyclerViewMovie(it)
                     }
-
                 })
-
                 movieViewModel.error.observe(this, {
                     Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
                 })
@@ -63,7 +61,7 @@ class MovieListActivity : AppCompatActivity() {
             TV_SHOW -> {
                 tvShowViewModel.tvPopular.observe(this, { result ->
                     result?.let {
-                        setRecyclerViewTVSHow(it.tvShowResult)
+                        setRecyclerViewTVSHow(it)
                     }
 
                 })
@@ -79,7 +77,11 @@ class MovieListActivity : AppCompatActivity() {
                 })
             }
             FAVORITE_TV_SHOW -> {
-
+                tvShowViewModel.tvShowsFavorite.observe(this, { result ->
+                    result?.let {
+                        setRecyclerViewTVSHow(result)
+                    }
+                })
             }
         }
     }

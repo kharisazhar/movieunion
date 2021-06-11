@@ -173,12 +173,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/b0WmHGc8LHTdGCVzxRb3IBMur57.jpg",
                     firstAirDate = "2021-03-19",
-                    genreIds = listOf(
-                        10765,
-                        10759,
-                        18,
-                        10768
-                    ),
                     id = 88396,
                     name = "The Falcon and the Winter Soldier",
                     originCountry = listOf("US"),
@@ -193,9 +187,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/zlXPNnnUlyg6KyvvjGd2ZxG6Tnw.jpg\"",
                     firstAirDate = "2017-09-25",
-                    genreIds = listOf(
-                        18
-                    ),
                     id = 71712,
                     name = "The Good Doctor",
                     originCountry = listOf("US"),
@@ -210,10 +201,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/jeruqNWhqRqOR1QyqdQdHunrvU5.jpg",
                     firstAirDate = "2014-10-07",
-                    genreIds = listOf(
-                        18,
-                        10765
-                    ),
                     id = 60735,
                     name = "The Flash",
                     originCountry = listOf(
@@ -230,9 +217,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/Wu8kh7oyvaIfkNyMJyJHCamh5L.jpg",
                     firstAirDate = "2020-12-04",
-                    genreIds = listOf(
-                        18
-                    ),
                     id = 97180,
                     name = "Selena: The Series",
                     originCountry = listOf(
@@ -249,12 +233,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/6UH52Fmau8RPsMAbQbjwN3wJSCj.jpg",
                     firstAirDate = "2021-03-26",
-                    genreIds = listOf(
-                        16,
-                        10759,
-                        18,
-                        10765
-                    ),
                     id = 95557,
                     name = "Invincible",
                     originCountry = listOf("US"),
@@ -269,12 +247,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/sjxtIUCWR74yPPcZFfTsToepfWm.jpg",
                     firstAirDate = "2021-05-04",
-                    genreIds = listOf(
-                        10765,
-                        10759,
-                        16
-
-                    ),
                     id = 105971,
                     name = "The Bad Batch",
                     originCountry = listOf("US"),
@@ -289,10 +261,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/hNiGqLsiD30C194lci7VYDmciHD.jpg",
                     firstAirDate = "2017-04-26",
-                    genreIds = listOf(
-                        10765,
-                        18
-                    ),
                     id = 69478,
                     name = "The Handmaid's Tale",
                     originCountry = listOf("US"),
@@ -307,9 +275,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/edmk8xjGBsYVIf4QtLY9WMaMcXZ.jpg",
                     firstAirDate = "2005-03-27",
-                    genreIds = listOf(
-                        18
-                    ),
                     id = 1416,
                     name = "Grey's Anatomy",
                     originCountry = listOf("US"),
@@ -324,11 +289,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/4YKkS95v9o9c0tBVA46xIn6M1tx.jpg",
                     firstAirDate = "2021-05-07",
-                    genreIds = listOf(
-                        10765,
-                        10759,
-                        18
-                    ),
                     id = 93484,
                     name = "Jupiter's Legacy",
                     originCountry = listOf("US"),
@@ -343,9 +303,6 @@ object DataDummy {
                 TVShowResult(
                     backdropPath = "/wkyzeBBKLhSg1Oqhky5yoiFF2hG.jpg",
                     firstAirDate = "2018-04-22",
-                    genreIds = listOf(
-                        18
-                    ),
                     id = 79008,
                     name = "Luis Miguel: The Series",
                     originCountry = listOf("MX"),

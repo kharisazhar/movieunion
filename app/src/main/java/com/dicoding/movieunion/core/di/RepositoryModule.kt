@@ -10,6 +10,6 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     factory<MovieRepositories> { MovieRepositoriesImpl(get(), get()) }
-    factory<TVRepositories> { TVRepositoriesImpl(get()) }
-    factory<MovieDetailRepositories> { MovieDetailRepositoriesImpl(get(), get()) }
+    factory<TVRepositories> { TVRepositoriesImpl(get(), get()) }
+    factory<MovieDetailRepositories> { MovieDetailRepositoriesImpl(get(), get(), get()) }
 }

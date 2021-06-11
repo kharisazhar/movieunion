@@ -20,4 +20,5 @@ val databaseModule = module {
     }
 
     single { get<MovieUnionDatabase>().movieDao() }
+    single { get<MovieUnionDatabase>().tvShowDao() }
 }

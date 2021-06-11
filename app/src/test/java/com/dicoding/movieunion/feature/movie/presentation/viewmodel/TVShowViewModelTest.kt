@@ -7,9 +7,10 @@ import com.dicoding.core.MainCoroutineRule
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.DataDummy
 import com.dicoding.movieunion.core.utils.Either
-import com.dicoding.movieunion.feature.movie.domain.entities.TVShowEntity
+import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 import com.dicoding.movieunion.feature.movie.domain.usecases.TVUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -25,21 +26,23 @@ class TVShowViewModelTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-
     @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var tvViewModel: TVShowViewModel
-    private val tTVShowEntity = DataDummy.generateDummyTVSHow()
+    private val tTVShowEntity = DataDummy.generateDummyTVSHow().tvShowResult
 
     private var tvUseCase = mock(TVUseCase::class.java)
 
     @Mock
-    private lateinit var observerTVShowEntity: Observer<TVShowEntity?>
+    private lateinit var observerTVShowEntity: Observer<List<TVShowResult>?>
 
     @Mock
     private lateinit var observerError: Observer<BaseErrorResponse?>
+
+    @Mock
+    private lateinit var observerFavoriteTVShows: Observer<List<TVShowResult>?>
 
     private var tBaseErrorResponse = BaseErrorResponse(
         400,
@@ -55,7 +58,7 @@ class TVShowViewModelTest {
     @Test
     fun `should get movie success`() {
         runBlocking {
-            val tvShowPopular = MutableLiveData<TVShowEntity>()
+            val tvShowPopular = MutableLiveData<List<TVShowResult>>()
             tvShowPopular.value = tTVShowEntity
             Mockito.`when`(tvUseCase.getTVPopular()).thenReturn(Either.Left(tTVShowEntity))
             tvViewModel.getTVPopular()
@@ -77,6 +80,21 @@ class TVShowViewModelTest {
             tvViewModel.getTVPopular()
             tvViewModel.error.observeForever(observerError)
             Mockito.verify(observerError).onChanged(tBaseErrorResponse)
+        }
+    }
+
+    @Test
+    fun `should get tv show favorite`() {
+        runBlocking {
+
+            val dummyTVShow = DataDummy.generateDummyTVSHow().tvShowResult
+            val flow = flow {
+                emit(dummyTVShow)
+            }
+
+            Mockito.`when`(tvUseCase.getFavoriteTVShow()).thenReturn(flow)
+            tvViewModel.getFavoriteTVShows()
+            tvViewModel.tvShowsFavorite.observeForever(observerFavoriteTVShows)
         }
     }
 }
