@@ -1,4 +1,4 @@
-package com.dicoding.movieunion.feature.movie.presentation.adapter
+package com.dicoding.movieunion.feature.movie.presentation.adapter.movie
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,31 +9,31 @@ import com.dicoding.movieunion.core.utils.OnItemClickListener
 import com.dicoding.movieunion.databinding.ItemMovieBinding
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 
-class MovieAdapter : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-    private var listMovies = ArrayList<MovieResult>()
+class FavoriteMovieAdapter : RecyclerView.Adapter<FavoriteMovieAdapter.FavoriteMovieViewHolder>() {
+    private var listFavoriteMovies = ArrayList<MovieResult>()
     var onItemClickListener: OnItemClickListener? = null
 
-    fun setMovies(courses: List<MovieResult>?) {
-        if (courses == null) return
-        this.listMovies.clear()
-        this.listMovies.addAll(courses)
+    fun setFavoriteMovies(favoriteMovies: List<MovieResult>?) {
+        if (favoriteMovies == null) return
+        this.listFavoriteMovies.clear()
+        this.listFavoriteMovies.addAll(favoriteMovies)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteMovieViewHolder {
         val itemsAcademyBinding =
             ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MovieViewHolder(itemsAcademyBinding)
+        return FavoriteMovieViewHolder(itemsAcademyBinding)
     }
 
-    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val course = listMovies[position]
+    override fun onBindViewHolder(holder: FavoriteMovieViewHolder, position: Int) {
+        val course = listFavoriteMovies[position]
         holder.bind(course)
     }
 
-    override fun getItemCount(): Int = listMovies.size
+    override fun getItemCount(): Int = listFavoriteMovies.size
 
 
-    inner class MovieViewHolder(private val binding: ItemMovieBinding) :
+    inner class FavoriteMovieViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: MovieResult) {
             with(binding) {

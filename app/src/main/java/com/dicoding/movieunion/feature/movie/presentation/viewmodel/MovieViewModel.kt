@@ -6,21 +6,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.Either
-import com.dicoding.movieunion.feature.movie.domain.entities.MovieEntity
+import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.usecases.MovieUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 interface MovieViewModelContract {
     fun getMovies()
+    fun getFavoriteMovie()
 }
 
 class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), MovieViewModelContract {
 
-    private val _movie = MediatorLiveData<MovieEntity?>()
-    val movie: LiveData<MovieEntity?>
+    private val _movie = MediatorLiveData<List<MovieResult>?>()
+    val movie: LiveData<List<MovieResult>?>
         get() = _movie
+
+    private val _movieFavorite = MediatorLiveData<List<MovieResult>?>()
+    val movieFavorite: LiveData<List<MovieResult>?>
+        get() = _movieFavorite
 
     private val _error = MediatorLiveData<BaseErrorResponse?>()
     val error: LiveData<BaseErrorResponse?>
@@ -28,21 +34,32 @@ class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), Movi
 
     init {
         getMovies()
+        getFavoriteMovie()
     }
 
     override fun getMovies() {
         viewModelScope.launch {
-            val result = movieUseCase.getMovies()
+            val resultNetwork = movieUseCase.getMovies()
             withContext(Dispatchers.Main) {
-                when (result) {
+                when (resultNetwork) {
                     is Either.Left -> {
-                        _movie.postValue(result.value)
+                        _movie.postValue(resultNetwork.value)
+
                     }
                     is Either.Right -> {
-                        _error.postValue(result.value)
+                        _error.postValue(resultNetwork.value)
                     }
                 }
 
+            }
+        }
+    }
+
+    override fun getFavoriteMovie() {
+        viewModelScope.launch {
+            val result = movieUseCase.getFavoriteMovie()
+            result?.collect {
+                _movieFavorite.postValue(it)
             }
         }
     }

@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_ID
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_LIST_TYPE
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_TYPE
+import com.dicoding.movieunion.core.utils.ExtraIntent.FAVORITE_MOVIE
+import com.dicoding.movieunion.core.utils.ExtraIntent.FAVORITE_TV_SHOW
 import com.dicoding.movieunion.core.utils.ExtraIntent.MOVIE
 import com.dicoding.movieunion.core.utils.ExtraIntent.TV_SHOW
 import com.dicoding.movieunion.core.utils.OnItemClickListener
@@ -15,8 +17,8 @@ import com.dicoding.movieunion.databinding.ActivityMovieListBinding
 import com.dicoding.movieunion.feature.detail_movie.presentation.DetailMovieActivity
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
-import com.dicoding.movieunion.feature.movie.presentation.adapter.MovieListAdapter
-import com.dicoding.movieunion.feature.movie.presentation.adapter.TVShowListAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.MovieListAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.TVShowListAdapter
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.TVShowViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -45,29 +47,41 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        if (listType == MOVIE) {
-            movieViewModel.movie.observe(this, { result ->
-                result?.let {
-                    setRecyclerViewMovie(it.movieResults)
-                }
+        when (listType) {
+            MOVIE -> {
+                movieViewModel.movie.observe(this, { result ->
+                    result?.let {
+                        setRecyclerViewMovie(it)
+                    }
 
-            })
+                })
 
-            movieViewModel.error.observe(this, {
-                Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
-            })
-        } else if (listType == TV_SHOW) {
-            tvShowViewModel.tvPopular.observe(this, { result ->
-                result?.let {
-                    setRecyclerViewTVSHow(it.tvShowResult)
-                }
+                movieViewModel.error.observe(this, {
+                    Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
+                })
+            }
+            TV_SHOW -> {
+                tvShowViewModel.tvPopular.observe(this, { result ->
+                    result?.let {
+                        setRecyclerViewTVSHow(it.tvShowResult)
+                    }
 
-            })
-            tvShowViewModel.error.observe(this, {
-                Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
-            })
+                })
+                tvShowViewModel.error.observe(this, {
+                    Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
+                })
+            }
+            FAVORITE_MOVIE -> {
+                movieViewModel.movieFavorite.observe(this, { result ->
+                    result?.let {
+                        setRecyclerViewMovie(result)
+                    }
+                })
+            }
+            FAVORITE_TV_SHOW -> {
+
+            }
         }
-
     }
 
     private fun setRecyclerViewMovie(movieResults: List<MovieResult>) {

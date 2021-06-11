@@ -1,4 +1,4 @@
-package com.dicoding.movieunion.feature.movie.presentation.adapter
+package com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

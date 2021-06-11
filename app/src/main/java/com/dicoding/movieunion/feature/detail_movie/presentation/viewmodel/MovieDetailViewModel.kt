@@ -6,6 +6,7 @@ import com.dicoding.movieunion.core.utils.Either
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.usecases.MovieDetailUseCase
+import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -15,6 +16,8 @@ interface MovieDetailViewModelContract {
     fun setMovieDetailId(id: Int)
     fun getTVDetail(id: Int)
     fun setTVDetailId(id: Int)
+    fun insertFavoriteMovie(movie: MovieResult)
+    fun deleteFavoriteMovie(id: Int)
 }
 
 class MovieDetailViewModel(private var movieDetailUseCase: MovieDetailUseCase) : ViewModel(),
@@ -90,4 +93,15 @@ class MovieDetailViewModel(private var movieDetailUseCase: MovieDetailUseCase) :
         }
     }
 
+    override fun insertFavoriteMovie(movie: MovieResult) {
+        viewModelScope.launch {
+            movieDetailUseCase.insertFavoriteMovie(movie)
+        }
+    }
+
+    override fun deleteFavoriteMovie(id: Int) {
+        viewModelScope.launch {
+            movieDetailUseCase.deleteFavoriteMovie(id)
+        }
+    }
 }

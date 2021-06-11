@@ -14,12 +14,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg",
-                    genreIds = listOf(
-                        28,
-                        14,
-                        12,
-                        878
-                    ),
                     id = 460465,
                     originalLanguage = "en",
                     originalTitle = "Mortal Kombat",
@@ -35,12 +29,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/fPGeS6jgdLovQAKunNHX8l0avCy.jpg",
-                    genreIds = listOf(
-                        28,
-                        12,
-                        53,
-                        10752
-                    ),
                     id = 567189,
                     originalLanguage = "en",
                     originalTitle = "Tom Clancy's Without Remorse",
@@ -56,11 +44,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/inJjDhCjfhh3RtrJWBmmDqeuSYC.jpg",
-                    genreIds = listOf(
-                        878,
-                        28,
-                        18
-                    ),
                     id = 399566,
                     originalLanguage = "en",
                     originalTitle = "Godzilla vs. Kong",
@@ -76,11 +59,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/mYM8x2Atv4MaLulaV0KVJWI1Djv.jpg",
-                    genreIds = listOf(
-                        28,
-                        80,
-                        53
-                    ),
                     id = 804435,
                     originalLanguage = "en",
                     originalTitle = "Vanquish",
@@ -96,11 +74,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/6zbKgwgaaCyyBXE4Sun4oWQfQmi.jpg\"",
-                    genreIds = listOf(
-                        28,
-                        53,
-                        80
-                    ),
                     id = 615457,
                     originalLanguage = "en",
                     originalTitle = "Nobody",
@@ -116,12 +89,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/pcDc2WJAYGJTTvRSEIpRZwM3Ola.jpg",
-                    genreIds = listOf(
-                        28,
-                        12,
-                        14,
-                        878
-                    ),
                     id = 791373,
                     originalLanguage = "en",
                     originalTitle = "Zack Snyder's Justice League",
@@ -137,12 +104,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/z7HLq35df6ZpRxdMAE0qE3Ge4SJ.jpg",
-                    genreIds = listOf(
-                        28,
-                        12,
-                        35,
-                        14
-                    ),
                     id = 615678,
                     originalLanguage = "en",
                     originalTitle = "Thunder Force",
@@ -158,13 +119,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/xPpXYnCWfjkt3zzE0dpCNME1pXF.jpg",
-                    genreIds = listOf(
-                        16,
-                        28,
-                        12,
-                        14,
-                        18
-                    ),
                     id = 635302,
                     originalLanguage = "ja",
                     originalTitle = "劇場版「鬼滅の刃」無限列車編",
@@ -180,12 +134,6 @@ object DataDummy {
                 MovieResult(
                     adult = false,
                     backdropPath = "/lHhc60NXYzswU4TvKSo45nY9Jzs.jpg",
-                    genreIds = listOf(
-                        16,
-                        35,
-                        10751,
-                        12
-                    ),
                     id = 726684,
                     originalLanguage = "fr",
                     originalTitle = "Miraculous World Shanghai, la légende de Ladydragon",
@@ -200,11 +148,6 @@ object DataDummy {
                 ), MovieResult(
                     adult = false,
                     backdropPath = "/5Zv5KmgZzdIvXz2KC3n0MyecSNL.jpg",
-                    genreIds = listOf(
-                        28,
-                        53,
-                        80
-                    ),
                     id = 634528,
                     originalLanguage = "en",
                     originalTitle = "The Marksman",
@@ -227,23 +170,6 @@ object DataDummy {
         return TVShowEntity(
             page = 1,
             tvShowResult = listOf(
-//                TVShowResult(
-//                    backdropPath =,
-//                    firstAirDate =,
-//                    genreIds = listOf(
-//
-//                    ),
-//                    id =,
-//                    name =,
-//                    originCountry = listOf(),
-//                    originalLanguage =,
-//                    originalName =,
-//                    overview =,
-//                    popularity =,
-//                    posterPath =,
-//                    voteAverage =,
-//                    voteCount =,
-//                )
                 TVShowResult(
                     backdropPath = "/b0WmHGc8LHTdGCVzxRb3IBMur57.jpg",
                     firstAirDate = "2021-03-19",

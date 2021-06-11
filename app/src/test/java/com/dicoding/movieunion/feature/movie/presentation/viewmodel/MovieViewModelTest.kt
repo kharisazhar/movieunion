@@ -7,9 +7,12 @@ import com.dicoding.core.MainCoroutineRule
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.DataDummy
 import com.dicoding.movieunion.core.utils.Either
-import com.dicoding.movieunion.feature.movie.domain.entities.MovieEntity
+import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.usecases.MovieUseCase
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -24,21 +27,23 @@ class MovieViewModelTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-
     @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var movieViewModel: MovieViewModel
-    private val tMovieEntity = DataDummy.generateDummyMovie()
+    private val tMovieEntity = DataDummy.generateDummyMovie().movieResults
 
     private var movieUseCase = mock(MovieUseCase::class.java)
 
     @Mock
-    private lateinit var observerMovieEntity: Observer<MovieEntity?>
+    private lateinit var observerMovieEntity: Observer<List<MovieResult>?>
 
     @Mock
     private lateinit var observerError: Observer<BaseErrorResponse?>
+
+    @Mock
+    private lateinit var observerFavoriteMovie: Observer<List<MovieResult>?>
 
     private var tBaseErrorResponse = BaseErrorResponse(
         400,
@@ -54,7 +59,7 @@ class MovieViewModelTest {
     @Test
     fun `should get movie success`() {
         runBlocking {
-            val movies = MutableLiveData<MovieEntity>()
+            val movies = MutableLiveData<List<MovieResult>>()
             movies.value = tMovieEntity
             `when`(movieUseCase.getMovies()).thenReturn(Either.Left(tMovieEntity))
             movieViewModel.getMovies()
@@ -76,6 +81,21 @@ class MovieViewModelTest {
             movieViewModel.getMovies()
             movieViewModel.error.observeForever(observerError)
             verify(observerError).onChanged(tBaseErrorResponse)
+        }
+    }
+
+    @Test
+    fun `should get movie favorite`() {
+        runBlocking {
+
+            val dummyMovie = DataDummy.generateDummyMovie().movieResults
+            val flow = flow {
+                emit(dummyMovie)
+            }
+
+            `when`(movieUseCase.getFavoriteMovie()).thenReturn(flow)
+            movieViewModel.getFavoriteMovie()
+            movieViewModel.movieFavorite.observeForever(observerFavoriteMovie)
         }
     }
 }

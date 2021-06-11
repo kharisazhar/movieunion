@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_ID
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_LIST_TYPE
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_TYPE
+import com.dicoding.movieunion.core.utils.ExtraIntent.FAVORITE_MOVIE
 import com.dicoding.movieunion.core.utils.ExtraIntent.MOVIE
 import com.dicoding.movieunion.core.utils.ExtraIntent.TV_SHOW
 import com.dicoding.movieunion.core.utils.OnItemClickListener
@@ -15,8 +16,9 @@ import com.dicoding.movieunion.databinding.ActivityHomeBinding
 import com.dicoding.movieunion.feature.detail_movie.presentation.DetailMovieActivity
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
-import com.dicoding.movieunion.feature.movie.presentation.adapter.MovieAdapter
-import com.dicoding.movieunion.feature.movie.presentation.adapter.TVShowAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.FavoriteMovieAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.MovieAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.TVShowAdapter
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.TVShowViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -26,10 +28,10 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var tvShowAdapter: TVShowAdapter
+    private lateinit var favoriteMovieAdapter: FavoriteMovieAdapter
 
     private val movieViewModel: MovieViewModel by viewModel()
     private val tvShowViewModel: TVShowViewModel by viewModel()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,14 +56,19 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_LIST_TYPE, TV_SHOW)
             startActivity(intent)
         }
+
+        activityHomeBinding.tvShowMoreFavoriteMovie.setOnClickListener {
+            val intent = Intent(this, MovieListActivity::class.java)
+            intent.putExtra(EXTRA_LIST_TYPE, FAVORITE_MOVIE)
+            startActivity(intent)
+        }
     }
 
     private fun initObserver() {
         movieViewModel.movie.observe(this, { result ->
             result?.let {
-                initMovieRecyclerView(it.movieResults)
+                initMovieRecyclerView(it)
             }
-
         })
 
         movieViewModel.error.observe(this, {
@@ -78,8 +85,13 @@ class HomeActivity : AppCompatActivity() {
         tvShowViewModel.error.observe(this, {
             Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
         })
-    }
 
+        movieViewModel.movieFavorite.observe(this, { result ->
+            result?.let {
+                initFavoriteMovieRecyclerView(it)
+            }
+        })
+    }
 
     private fun initMovieRecyclerView(movies: List<MovieResult>) {
         movieAdapter = MovieAdapter()
@@ -115,6 +127,24 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         tvShowAdapter.setTVShow(tvShows)
+    }
+
+    private fun initFavoriteMovieRecyclerView(favoriteMovie: List<MovieResult>) {
+        favoriteMovieAdapter = FavoriteMovieAdapter()
+        with(activityHomeBinding.rvFavoriteMovie) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
+            adapter = favoriteMovieAdapter
+        }
+        favoriteMovieAdapter.onItemClickListener = object : OnItemClickListener {
+            override fun onItemClick(item: Any, position: Int) {
+                val intent = Intent(this@HomeActivity, DetailMovieActivity::class.java)
+                intent.putExtra(EXTRA_TYPE, MOVIE)
+                intent.putExtra(EXTRA_ID, favoriteMovie[position].id)
+                startActivity(intent)
+            }
+        }
+        favoriteMovieAdapter.setFavoriteMovies(favoriteMovie)
     }
 
     override fun onBackPressed() {

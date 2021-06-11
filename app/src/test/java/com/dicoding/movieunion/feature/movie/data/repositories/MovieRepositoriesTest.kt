@@ -2,6 +2,7 @@ package com.dicoding.movieunion.feature.movie.data.repositories
 
 import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.core.utils.DataDummy
+import com.dicoding.movieunion.feature.movie.data.database.MovieDao
 import com.dicoding.movieunion.feature.movie.data.network.MovieNetworkService
 import com.dicoding.movieunion.feature.movie.domain.repositories.MovieRepositories
 import kotlinx.coroutines.runBlocking
@@ -15,6 +16,7 @@ import retrofit2.Response
 class MovieRepositoriesTest {
 
     private var movieNetworkService = mock(MovieNetworkService::class.java)
+    private var movieDao = mock(MovieDao::class.java)
 
     private lateinit var movieRepositories: MovieRepositories
 
@@ -22,7 +24,7 @@ class MovieRepositoriesTest {
 
     @Before
     fun setUp() {
-        movieRepositories = MovieRepositoriesImpl(movieNetworkService)
+        movieRepositories = MovieRepositoriesImpl(movieNetworkService, movieDao)
     }
 
     @Test

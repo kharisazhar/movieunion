@@ -9,7 +9,7 @@ import com.dicoding.movieunion.feature.movie.domain.repositories.TVRepositories
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    factory<MovieRepositories> { MovieRepositoriesImpl(get()) }
+    factory<MovieRepositories> { MovieRepositoriesImpl(get(), get()) }
     factory<TVRepositories> { TVRepositoriesImpl(get()) }
-    factory<MovieDetailRepositories> { MovieDetailRepositoriesImpl(get()) }
+    factory<MovieDetailRepositories> { MovieDetailRepositoriesImpl(get(), get()) }
 }

@@ -6,6 +6,7 @@ import com.dicoding.movieunion.core.utils.EspressoIdlingResource
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.repositories.MovieDetailRepositories
+import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 
 class MovieDetailUseCase(private val movieDetailRepositories: MovieDetailRepositories) {
     suspend fun getMovieDetail(id: Int): Either<MovieDetailEntity, BaseErrorResponse> {
@@ -63,6 +64,18 @@ class MovieDetailUseCase(private val movieDetailRepositories: MovieDetailReposit
                     success = false
                 )
             )
+        }
+    }
+
+    suspend fun insertFavoriteMovie(movie: MovieResult) {
+        movieDetailRepositories.insertFavoriteMovie(movie)
+    }
+
+    suspend fun deleteFavoriteMovie(id: Int) {
+        try {
+            movieDetailRepositories.deleteFavoriteMovie(id)
+        } catch (e: Exception) {
+
         }
     }
 }

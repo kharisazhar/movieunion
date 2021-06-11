@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black_retro"
+    android:fillViewport="true"
     tools:context=".feature.detail_movie.presentation.DetailMovieActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/black_retro"
+        tools:context=".feature.detail_movie.presentation.DetailMovieActivity">
 
         <ImageView
             android:id="@+id/imgBackdropPath"
@@ -22,6 +25,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <ImageView
+            android:id="@+id/btnBackDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTitle"
@@ -92,7 +105,6 @@
                 tools:rating="1.3" />
         </LinearLayout>
 
-
         <TextView
             android:id="@+id/tvOverview"
             android:layout_width="0dp"
@@ -103,8 +115,23 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/rowRatingBar"
             app:layout_constraintStart_toStartOf="@+id/rowRatingBar"
-            app:layout_constraintTop_toBottomOf="@+id/rowRatingBar"
-            tools:text="@tools:sample/lorem/random" />
+            app:layout_constraintTop_toBottomOf="@+id/rowRatingBar" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@color/red_retro"
+            android:contentDescription="@string/floating_button_favorite"
+            android:src="@drawable/ic_favorite_inactive"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

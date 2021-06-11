@@ -14,13 +14,18 @@ import com.dicoding.movieunion.databinding.ActivityDetailMovieBinding
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.presentation.viewmodel.MovieDetailViewModel
+import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
+import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class DetailMovieActivity : AppCompatActivity() {
     private lateinit var activityDetailMovieBinding: ActivityDetailMovieBinding
     private var genre: String = ""
+    private var isFavorite = false
+    private var movieId: Int = -1
 
     private val movieDetailViewModel: MovieDetailViewModel by viewModel()
+    private val movieViewModel: MovieViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,22 +35,71 @@ class DetailMovieActivity : AppCompatActivity() {
         setContentView(activityDetailMovieBinding.root)
 
         val type = intent.getStringExtra(EXTRA_TYPE)
-        val id = intent.getIntExtra(EXTRA_ID, 0)
+        movieId = intent.getIntExtra(EXTRA_ID, 0)
 
         if (type == MOVIE) {
-            movieDetailViewModel.getMovieDetail(id)
+            movieDetailViewModel.getMovieDetail(movieId)
         } else if (type == TV_SHOW) {
-            movieDetailViewModel.getTVDetail(id)
+            movieDetailViewModel.getTVDetail(movieId)
+        }
+
+        activityDetailMovieBinding.btnBackDetail.setOnClickListener {
+            finish()
         }
 
         initObserve()
 
     }
 
+    private fun initViewFavoriteButton() {
+        if (!isFavorite) {
+            activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_inactive)
+        } else {
+            activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_active)
+        }
+
+    }
+
+    private fun setFavoriteMovie(movie: MovieDetailEntity) {
+        activityDetailMovieBinding.fabFavorite.setOnClickListener {
+            if (!isFavorite) {
+                isFavorite = true
+                activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_active)
+                insertMovieFavorite(movie)
+            } else {
+                isFavorite = false
+                activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_inactive)
+                movieDetailViewModel.deleteFavoriteMovie(movie.id)
+            }
+        }
+    }
+
+    private fun insertMovieFavorite(movie: MovieDetailEntity) {
+        movieDetailViewModel.insertFavoriteMovie(
+            MovieResult(
+                id = movie.id,
+                adult = movie.adult,
+                backdropPath = movie.backdropPath,
+                originalLanguage = movie.originalLanguage,
+                originalTitle = movie.originalTitle,
+                overview = movie.overview,
+                popularity = movie.popularity,
+                posterPath = movie.posterPath,
+                releaseDate = movie.releaseDate,
+                title = movie.title,
+                video = movie.video,
+                voteAverage = movie.voteAverage,
+                voteCount = movie.voteCount,
+                isFavorite = true
+            )
+        )
+    }
+
     private fun initObserve() {
         movieDetailViewModel.movieDetail.observe(this, {
             it?.let {
                 setDetailMovie(it)
+                setFavoriteMovie(it)
             }
         })
 
@@ -62,6 +116,20 @@ class DetailMovieActivity : AppCompatActivity() {
         movieDetailViewModel.errorDetailTV.observe(this, {
             Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
         })
+
+        movieViewModel.movieFavorite.observe(this, { movies ->
+            val data = movies?.filter {
+                it.id == movieId
+            }
+            isFavorite = if (data!!.isNotEmpty()) {
+                data[0].isFavorite!!
+            } else {
+                false
+            }
+
+            initViewFavoriteButton()
+        })
+
     }
 
     private fun setDetailMovie(movieDetailEntity: MovieDetailEntity) {
