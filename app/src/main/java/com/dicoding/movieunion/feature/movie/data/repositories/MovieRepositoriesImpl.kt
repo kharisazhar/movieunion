@@ -7,8 +7,6 @@ import com.dicoding.movieunion.feature.movie.data.network.MovieNetworkService
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieEntity
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.repositories.MovieRepositories
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 
 class MovieRepositoriesImpl(

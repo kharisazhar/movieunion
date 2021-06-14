@@ -11,7 +11,6 @@ import com.dicoding.movieunion.feature.detail_movie.domain.entities.MovieDetailE
 import com.dicoding.movieunion.feature.detail_movie.domain.entities.TVDetailEntity
 import com.dicoding.movieunion.feature.detail_movie.domain.usecases.MovieDetailUseCase
 import com.dicoding.movieunion.feature.detail_movie.presentation.viewmodel.MovieDetailViewModel
-import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
