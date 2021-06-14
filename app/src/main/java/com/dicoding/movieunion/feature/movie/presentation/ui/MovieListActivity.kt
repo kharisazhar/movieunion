@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_ID
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_LIST_TYPE
@@ -17,10 +19,14 @@ import com.dicoding.movieunion.databinding.ActivityMovieListBinding
 import com.dicoding.movieunion.feature.detail_movie.presentation.DetailMovieActivity
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
+import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.FavoriteMovieListAdapter
 import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.MovieListAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.FavoriteTVShowListAdapter
 import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.TVShowListAdapter
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.TVShowViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MovieListActivity : AppCompatActivity() {
@@ -28,6 +34,9 @@ class MovieListActivity : AppCompatActivity() {
     private lateinit var activityMovieListBinding: ActivityMovieListBinding
     private lateinit var movieListAdapter: MovieListAdapter
     private lateinit var tvShowListAdapter: TVShowListAdapter
+    private lateinit var favoriteTvShowListAdapter: FavoriteTVShowListAdapter
+    private lateinit var favoriteMovieListAdapter: FavoriteMovieListAdapter
+
 
     private val movieViewModel: MovieViewModel by viewModel()
     private val tvShowViewModel: TVShowViewModel by viewModel()
@@ -70,18 +79,18 @@ class MovieListActivity : AppCompatActivity() {
                 })
             }
             FAVORITE_MOVIE -> {
-                movieViewModel.movieFavorite.observe(this, { result ->
-                    result?.let {
-                        setRecyclerViewMovie(result)
+                lifecycleScope.launch {
+                    movieViewModel.getFavoriteMovie().collectLatest { result ->
+                        setRecyclerViewFavoriteMovie(result)
                     }
-                })
+                }
             }
             FAVORITE_TV_SHOW -> {
-                tvShowViewModel.tvShowsFavorite.observe(this, { result ->
-                    result?.let {
-                        setRecyclerViewTVSHow(result)
+                lifecycleScope.launch {
+                    tvShowViewModel.getFavoriteTVShows().collectLatest { result ->
+                        setRecyclerViewFavoriteTVSHow(result)
                     }
-                })
+                }
             }
         }
     }
@@ -120,5 +129,31 @@ class MovieListActivity : AppCompatActivity() {
             }
         }
         tvShowListAdapter.setTVShow(tvShowResults)
+    }
+
+    private fun setRecyclerViewFavoriteMovie(movieResults: PagingData<MovieResult>) {
+        favoriteMovieListAdapter = FavoriteMovieListAdapter()
+        with(activityMovieListBinding.rvMovieSeeMore) {
+            layoutManager = GridLayoutManager(context, 2)
+            setHasFixedSize(true)
+            adapter = favoriteMovieListAdapter
+        }
+
+        lifecycleScope.launch {
+            favoriteMovieListAdapter.submitData(movieResults)
+        }
+
+    }
+
+    private fun setRecyclerViewFavoriteTVSHow(tvShowResults: PagingData<TVShowResult>) {
+        favoriteTvShowListAdapter = FavoriteTVShowListAdapter()
+        with(activityMovieListBinding.rvMovieSeeMore) {
+            layoutManager = GridLayoutManager(context, 2)
+            setHasFixedSize(true)
+            adapter = favoriteTvShowListAdapter
+        }
+        lifecycleScope.launch {
+            favoriteTvShowListAdapter.submitData(tvShowResults)
+        }
     }
 }

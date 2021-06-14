@@ -3,6 +3,7 @@ package com.dicoding.movieunion.feature.movie.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagingData
 import com.dicoding.core.MainCoroutineRule
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.DataDummy
@@ -10,8 +11,8 @@ import com.dicoding.movieunion.core.utils.Either
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.usecases.MovieUseCase
 import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -41,9 +42,6 @@ class MovieViewModelTest {
 
     @Mock
     private lateinit var observerError: Observer<BaseErrorResponse?>
-
-    @Mock
-    private lateinit var observerFavoriteMovie: Observer<List<MovieResult>?>
 
     private var tBaseErrorResponse = BaseErrorResponse(
         400,
@@ -86,16 +84,19 @@ class MovieViewModelTest {
 
     @Test
     fun `should get movie favorite`() {
+
         runBlocking {
 
             val dummyMovie = DataDummy.generateDummyMovie().movieResults
+            val pagingData = PagingData.from(dummyMovie)
             val flow = flow {
-                emit(dummyMovie)
+                emit(pagingData)
             }
 
             `when`(movieUseCase.getFavoriteMovie()).thenReturn(flow)
-            movieViewModel.getFavoriteMovie()
-            movieViewModel.movieFavorite.observeForever(observerFavoriteMovie)
+            movieViewModel.getFavoriteMovie().collect {
+                assertEquals(it, pagingData)
+            }
         }
     }
 }

@@ -26,3 +26,5 @@ interface MovieDetailNetworkService {
         @Query("api_key") key: String
     ): Response<TVDetailEntity>
 }
+
+

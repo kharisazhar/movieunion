@@ -4,18 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.Either
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.usecases.MovieUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 interface MovieViewModelContract {
     fun getMovies()
-    fun getFavoriteMovie()
+    fun getFavoriteMovie(): Flow<PagingData<MovieResult>>
 }
 
 class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), MovieViewModelContract {
@@ -24,17 +25,12 @@ class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), Movi
     val movie: LiveData<List<MovieResult>?>
         get() = _movie
 
-    private val _movieFavorite = MediatorLiveData<List<MovieResult>?>()
-    val movieFavorite: LiveData<List<MovieResult>?>
-        get() = _movieFavorite
-
     private val _error = MediatorLiveData<BaseErrorResponse?>()
     val error: LiveData<BaseErrorResponse?>
         get() = _error
 
     init {
         getMovies()
-        getFavoriteMovie()
     }
 
     override fun getMovies() {
@@ -55,14 +51,7 @@ class MovieViewModel(private var movieUseCase: MovieUseCase) : ViewModel(), Movi
         }
     }
 
-    override fun getFavoriteMovie() {
-        viewModelScope.launch {
-            val result = movieUseCase.getFavoriteMovie()
-            result?.collect {
-                withContext(Dispatchers.Main) {
-                    _movieFavorite.postValue(it)
-                }
-            }
-        }
+    override fun getFavoriteMovie(): Flow<PagingData<MovieResult>> {
+        return movieUseCase.getFavoriteMovie()
     }
 }

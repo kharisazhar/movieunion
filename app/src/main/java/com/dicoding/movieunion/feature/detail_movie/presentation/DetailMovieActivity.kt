@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.R
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_ID
+import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_IS_FAVORITE
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_TYPE
 import com.dicoding.movieunion.core.utils.ExtraIntent.MOVIE
 import com.dicoding.movieunion.core.utils.ExtraIntent.TV_SHOW
@@ -38,21 +39,16 @@ class DetailMovieActivity : AppCompatActivity() {
         activityDetailMovieBinding = ActivityDetailMovieBinding.inflate(layoutInflater)
         setContentView(activityDetailMovieBinding.root)
 
-        type = intent.getStringExtra(EXTRA_TYPE)
-        id = intent.getIntExtra(EXTRA_ID, 0)
-
-        if (type == MOVIE) {
-            movieDetailViewModel.getMovieDetail(id)
-            initObserveFavoriteMovie()
-        } else if (type == TV_SHOW) {
-            movieDetailViewModel.getTVDetail(id)
-            initObserveFavoriteTVShow()
-        }
-
+        // BACK BUTTON HANLDER
         activityDetailMovieBinding.btnBackDetail.setOnClickListener {
             finish()
         }
 
+        type = intent.getStringExtra(EXTRA_TYPE)
+        id = intent.getIntExtra(EXTRA_ID, 0)
+        isFavorite = intent.getBooleanExtra(EXTRA_IS_FAVORITE, false)
+
+        initViewFavoriteButton()
         initObserve()
 
     }
@@ -64,36 +60,6 @@ class DetailMovieActivity : AppCompatActivity() {
             activityDetailMovieBinding.fabFavorite.setImageResource(R.drawable.ic_favorite_active)
         }
 
-    }
-
-    private fun initObserveFavoriteMovie() {
-        movieViewModel.movieFavorite.observe(this, { movies ->
-            val data = movies?.filter {
-                it.id == id
-            }
-            isFavorite = if (data!!.isNotEmpty()) {
-                data[0].isFavorite!!
-            } else {
-                false
-            }
-
-            initViewFavoriteButton()
-        })
-    }
-
-    private fun initObserveFavoriteTVShow() {
-        tvShowViewModel.tvShowsFavorite.observe(this, { movies ->
-            val data = movies?.filter {
-                it.id == id
-            }
-            isFavorite = if (data!!.isNotEmpty()) {
-                data[0].isFavorite!!
-            } else {
-                false
-            }
-
-            initViewFavoriteButton()
-        })
     }
 
     private fun setFavoriteMovie(movie: MovieDetailEntity) {

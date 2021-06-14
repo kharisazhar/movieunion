@@ -3,13 +3,16 @@ package com.dicoding.movieunion.feature.movie.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagingData
 import com.dicoding.core.MainCoroutineRule
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.DataDummy
 import com.dicoding.movieunion.core.utils.Either
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 import com.dicoding.movieunion.feature.movie.domain.usecases.TVUseCase
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -88,13 +91,15 @@ class TVShowViewModelTest {
         runBlocking {
 
             val dummyTVShow = DataDummy.generateDummyTVSHow().tvShowResult
+            val pagingData = PagingData.from(dummyTVShow)
             val flow = flow {
-                emit(dummyTVShow)
+                emit(pagingData)
             }
 
             Mockito.`when`(tvUseCase.getFavoriteTVShow()).thenReturn(flow)
-            tvViewModel.getFavoriteTVShows()
-            tvViewModel.tvShowsFavorite.observeForever(observerFavoriteTVShows)
+            tvViewModel.getFavoriteTVShows().collect {
+                assertEquals(it, pagingData)
+            }
         }
     }
 }

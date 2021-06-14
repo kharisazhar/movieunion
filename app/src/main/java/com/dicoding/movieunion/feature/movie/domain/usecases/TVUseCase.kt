@@ -1,5 +1,8 @@
 package com.dicoding.movieunion.feature.movie.domain.usecases
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.dicoding.movieunion.core.network.BaseErrorResponse
 import com.dicoding.movieunion.core.utils.Either
 import com.dicoding.movieunion.core.utils.EspressoIdlingResource
@@ -37,7 +40,15 @@ class TVUseCase(private val tvRepositories: TVRepositories) {
         }
     }
 
-    suspend fun getFavoriteTVShow(): Flow<List<TVShowResult>>? {
-        return tvRepositories.getFavoriteTVShows()
+    fun getFavoriteTVShow(): Flow<PagingData<TVShowResult>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = {
+                tvRepositories.getFavoriteTVShows()
+            }
+        ).flow
     }
 }

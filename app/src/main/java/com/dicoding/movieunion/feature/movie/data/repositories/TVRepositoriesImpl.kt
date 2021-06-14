@@ -1,12 +1,12 @@
 package com.dicoding.movieunion.feature.movie.data.repositories
 
+import androidx.paging.PagingSource
 import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.feature.movie.data.database.TVShowDao
 import com.dicoding.movieunion.feature.movie.data.network.TVNetworkService
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowEntity
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 import com.dicoding.movieunion.feature.movie.domain.repositories.TVRepositories
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class TVRepositoriesImpl(
@@ -21,7 +21,7 @@ class TVRepositoriesImpl(
         tvShowDao.insertFavoriteTVShow(tvShow)
     }
 
-    override suspend fun getFavoriteTVShows(): Flow<List<TVShowResult>>? {
+    override fun getFavoriteTVShows(): PagingSource<Int, TVShowResult> {
         return tvShowDao.getFavoriteTVShows()
     }
 }

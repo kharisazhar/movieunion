@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_ID
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_LIST_TYPE
@@ -23,6 +25,8 @@ import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.Favori
 import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.TVShowAdapter
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.TVShowViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity() {
@@ -96,17 +100,17 @@ class HomeActivity : AppCompatActivity() {
             Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
         })
 
-        movieViewModel.movieFavorite.observe(this, { result ->
-            result?.let {
+        lifecycleScope.launch {
+            movieViewModel.getFavoriteMovie().collectLatest {
                 initFavoriteMovieRecyclerView(it)
             }
-        })
+        }
 
-        tvShowViewModel.tvShowsFavorite.observe(this, { result ->
-            result?.let {
+        lifecycleScope.launch {
+            tvShowViewModel.getFavoriteTVShows().collectLatest {
                 initFavoriteTVRecyclerView(it)
             }
-        })
+        }
     }
 
     private fun initMovieRecyclerView(movies: List<MovieResult>) {
@@ -145,40 +149,29 @@ class HomeActivity : AppCompatActivity() {
         tvShowAdapter.setTVShow(tvShows)
     }
 
-    private fun initFavoriteMovieRecyclerView(favoriteMovie: List<MovieResult>) {
+    private fun initFavoriteMovieRecyclerView(favoriteMovie: PagingData<MovieResult>) {
         favoriteMovieAdapter = FavoriteMovieAdapter()
         with(activityHomeBinding.rvFavoriteMovie) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
             adapter = favoriteMovieAdapter
         }
-        favoriteMovieAdapter.onItemClickListener = object : OnItemClickListener {
-            override fun onItemClick(item: Any, position: Int) {
-                val intent = Intent(this@HomeActivity, DetailMovieActivity::class.java)
-                intent.putExtra(EXTRA_TYPE, MOVIE)
-                intent.putExtra(EXTRA_ID, favoriteMovie[position].id)
-                startActivity(intent)
-            }
+        lifecycleScope.launch {
+            favoriteMovieAdapter.submitData(favoriteMovie)
         }
-        favoriteMovieAdapter.setFavoriteMovies(favoriteMovie)
+
     }
 
-    private fun initFavoriteTVRecyclerView(favoriteTVShow: List<TVShowResult>) {
+    private fun initFavoriteTVRecyclerView(favoriteTVShow: PagingData<TVShowResult>) {
         favoriteTVShowAdapter = FavoriteTVShowAdapter()
         with(activityHomeBinding.rvFavoriteTV) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
             adapter = favoriteTVShowAdapter
         }
-        favoriteTVShowAdapter.onItemClickListener = object : OnItemClickListener {
-            override fun onItemClick(item: Any, position: Int) {
-                val intent = Intent(this@HomeActivity, DetailMovieActivity::class.java)
-                intent.putExtra(EXTRA_TYPE, TV_SHOW)
-                intent.putExtra(EXTRA_ID, favoriteTVShow[position].id)
-                startActivity(intent)
-            }
+        lifecycleScope.launch {
+            favoriteTVShowAdapter.submitData(favoriteTVShow)
         }
-        favoriteTVShowAdapter.setFavoriteTVShows(favoriteTVShow)
     }
 
     override fun onBackPressed() {

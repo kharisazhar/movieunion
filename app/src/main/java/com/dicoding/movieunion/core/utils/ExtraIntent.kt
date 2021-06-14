@@ -8,4 +8,5 @@ object ExtraIntent {
     const val FAVORITE_TV_SHOW = "FAVORITE_TV_SHOW"
     const val EXTRA_TYPE = "TYPE"
     const val EXTRA_ID = "EXTRA_ID"
+    const val EXTRA_IS_FAVORITE = "EXTRA_IS_FAVORITE"
 }
