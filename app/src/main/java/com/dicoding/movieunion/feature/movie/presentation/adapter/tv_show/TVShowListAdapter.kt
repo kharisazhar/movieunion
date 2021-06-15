@@ -1,14 +1,15 @@
-package com.dicoding.movieunion.feature.movie.presentation.adapter
+package com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.core.utils.OnItemClickListener
-import com.dicoding.movieunion.databinding.ItemMovieBinding
+import com.dicoding.movieunion.databinding.ItemMovieListBinding
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
 
-class TVShowAdapter : RecyclerView.Adapter<TVShowAdapter.MovieViewHolder>() {
+class TVShowListAdapter : RecyclerView.Adapter<TVShowListAdapter.MovieViewHolder>() {
     private var listTVShows = ArrayList<TVShowResult>()
     var onItemClickListener: OnItemClickListener? = null
 
@@ -19,9 +20,9 @@ class TVShowAdapter : RecyclerView.Adapter<TVShowAdapter.MovieViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val itemsAcademyBinding =
-            ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MovieViewHolder(itemsAcademyBinding)
+        val itemMoveListBinding =
+            ItemMovieListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MovieViewHolder(itemMoveListBinding)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -32,7 +33,7 @@ class TVShowAdapter : RecyclerView.Adapter<TVShowAdapter.MovieViewHolder>() {
     override fun getItemCount(): Int = listTVShows.size
 
 
-    inner class MovieViewHolder(private val binding: ItemMovieBinding) :
+    inner class MovieViewHolder(private val binding: ItemMovieListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(tvShow: TVShowResult) {
             with(binding) {
@@ -43,7 +44,7 @@ class TVShowAdapter : RecyclerView.Adapter<TVShowAdapter.MovieViewHolder>() {
                 }
 
                 Glide.with(itemView.context)
-                    .load("https://image.tmdb.org/t/p/w342" + tvShow.posterPath)
+                    .load("${BuildConfig.BASE_URL_IMAGE}w342" + tvShow.posterPath)
                     .into(imgPoster)
             }
         }

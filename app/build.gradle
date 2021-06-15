@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -13,7 +14,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0-submission-1"
+        versionName "1.0-submission-2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -22,7 +23,8 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", 'BASE_URL', '"https://api.themoviedb.org/3/"'
-//            buildConfigField('String', 'KEY_AUTH', API_KEY)
+            buildConfigField "String", 'BASE_URL_IMAGE', '"https://image.tmdb.org/t/p/"'
+            buildConfigField('String', 'KEY_AUTH', API_KEY)
         }
 
         release {
@@ -30,6 +32,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             buildConfigField "String", 'BASE_URL', '"https://api.themoviedb.org/3/"'
+            buildConfigField "String", 'BASE_URL_IMAGE', '"https://image.tmdb.org/t/p/"'
+            buildConfigField('String', 'KEY_AUTH', API_KEY)
+
         }
     }
     compileOptions {
@@ -66,6 +71,11 @@ dependencies {
     androidTestImplementation "androidx.test:rules:$androidTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$junitExtversion"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    implementation "androidx.test.espresso:espresso-idling-resource:$idleResourceVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    testImplementation "androidx.arch.core:core-testing:$androidCoreTestVersion"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3'
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
@@ -73,6 +83,24 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$httpLoggingVersion"
 
     // coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesCoreVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesAndroidVersion"
+
+    // koin
+    implementation "org.koin:koin-android-viewmodel:$koinVersion"
+    implementation "org.koin:koin-android:$koinVersion"
+
+    //Architecture Lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion"
+
+    // Room 
+    implementation "androidx.room:room-ktx:$roomRuntimeVersion"
+    implementation "androidx.room:room-runtime:$roomRuntimeVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
+    // Paging
+    implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
+
 }

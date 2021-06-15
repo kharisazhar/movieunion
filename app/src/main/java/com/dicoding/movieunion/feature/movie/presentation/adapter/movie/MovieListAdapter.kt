@@ -1,21 +1,22 @@
-package com.dicoding.movieunion.feature.movie.presentation.adapter
+package com.dicoding.movieunion.feature.movie.presentation.adapter.movie
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.dicoding.movieunion.BuildConfig
 import com.dicoding.movieunion.core.utils.OnItemClickListener
 import com.dicoding.movieunion.databinding.ItemMovieListBinding
-import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
+import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 
-class TVShowListAdapter : RecyclerView.Adapter<TVShowListAdapter.MovieViewHolder>() {
-    private var listTVShows = ArrayList<TVShowResult>()
+class MovieListAdapter : RecyclerView.Adapter<MovieListAdapter.MovieViewHolder>() {
+    private var listMovies = ArrayList<MovieResult>()
     var onItemClickListener: OnItemClickListener? = null
 
-    fun setTVShow(courses: List<TVShowResult>?) {
-        if (courses == null) return
-        this.listTVShows.clear()
-        this.listTVShows.addAll(courses)
+    fun setMovies(movies: List<MovieResult>?) {
+        if (movies == null) return
+        this.listMovies.clear()
+        this.listMovies.addAll(movies)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -25,25 +26,25 @@ class TVShowListAdapter : RecyclerView.Adapter<TVShowListAdapter.MovieViewHolder
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val course = listTVShows[position]
+        val course = listMovies[position]
         holder.bind(course)
     }
 
-    override fun getItemCount(): Int = listTVShows.size
+    override fun getItemCount(): Int = listMovies.size
 
 
     inner class MovieViewHolder(private val binding: ItemMovieListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(tvShow: TVShowResult) {
+        fun bind(movie: MovieResult) {
             with(binding) {
-                tvTitle.text = tvShow.name
-                tvReleaseDate.text = tvShow.firstAirDate
+                tvTitle.text = movie.title
+                tvReleaseDate.text = movie.releaseDate
                 itemView.setOnClickListener {
                     onItemClickListener?.onItemClick(binding, bindingAdapterPosition)
                 }
 
                 Glide.with(itemView.context)
-                    .load("https://image.tmdb.org/t/p/w342" + tvShow.posterPath)
+                    .load("${BuildConfig.BASE_URL_IMAGE}w342" + movie.posterPath)
                     .into(imgPoster)
             }
         }

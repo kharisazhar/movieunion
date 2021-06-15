@@ -2,45 +2,55 @@ package com.dicoding.movieunion.feature.movie.presentation.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.movieunion.core.utils.ExtraIntent
-import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_DETAIL_MOVIE
+import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_ID
 import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_LIST_TYPE
+import com.dicoding.movieunion.core.utils.ExtraIntent.EXTRA_TYPE
+import com.dicoding.movieunion.core.utils.ExtraIntent.FAVORITE_MOVIE
+import com.dicoding.movieunion.core.utils.ExtraIntent.FAVORITE_TV_SHOW
 import com.dicoding.movieunion.core.utils.ExtraIntent.MOVIE
 import com.dicoding.movieunion.core.utils.ExtraIntent.TV_SHOW
 import com.dicoding.movieunion.core.utils.OnItemClickListener
 import com.dicoding.movieunion.databinding.ActivityHomeBinding
-import com.dicoding.movieunion.feature.detail.presentation.DetailMovieActivity
+import com.dicoding.movieunion.feature.detail_movie.presentation.DetailMovieActivity
 import com.dicoding.movieunion.feature.movie.domain.entities.MovieResult
 import com.dicoding.movieunion.feature.movie.domain.entities.TVShowResult
-import com.dicoding.movieunion.feature.movie.presentation.adapter.MovieAdapter
-import com.dicoding.movieunion.feature.movie.presentation.adapter.TVShowAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.FavoriteMovieAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.movie.MovieAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.FavoriteTVShowAdapter
+import com.dicoding.movieunion.feature.movie.presentation.adapter.tv_show.TVShowAdapter
 import com.dicoding.movieunion.feature.movie.presentation.viewmodel.MovieViewModel
+import com.dicoding.movieunion.feature.movie.presentation.viewmodel.TVShowViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var activityHomeBinding: ActivityHomeBinding
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var tvShowAdapter: TVShowAdapter
+    private lateinit var favoriteMovieAdapter: FavoriteMovieAdapter
+    private lateinit var favoriteTVShowAdapter: FavoriteTVShowAdapter
+
+    private val movieViewModel: MovieViewModel by viewModel()
+    private val tvShowViewModel: TVShowViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.NewInstanceFactory()
-        )[MovieViewModel::class.java]
-        val courses = viewModel.getMovie()
-        val tvShows = viewModel.getTVShow()
-
         activityHomeBinding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(activityHomeBinding.root)
 
-        initMovieRecyclerView(courses.movieResults)
-        initTVShowRecyclerView(tvShows.tvShowResult)
+        initView()
+        initObserver()
+    }
 
+    private fun initView() {
         activityHomeBinding.tvShowMoreMovie.setOnClickListener {
             val intent = Intent(this, MovieListActivity::class.java)
             intent.putExtra(EXTRA_LIST_TYPE, MOVIE)
@@ -52,8 +62,56 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra(EXTRA_LIST_TYPE, TV_SHOW)
             startActivity(intent)
         }
+
+        activityHomeBinding.tvShowMoreFavoriteMovie.setOnClickListener {
+            val intent = Intent(this, MovieListActivity::class.java)
+            intent.putExtra(EXTRA_LIST_TYPE, FAVORITE_MOVIE)
+            startActivity(intent)
+        }
+
+        activityHomeBinding.tvShowMoreFavoriteTV.setOnClickListener {
+            val intent = Intent(this, MovieListActivity::class.java)
+            intent.putExtra(EXTRA_LIST_TYPE, FAVORITE_TV_SHOW)
+            startActivity(intent)
+        }
+
+
     }
 
+    private fun initObserver() {
+        movieViewModel.movie.observe(this, { result ->
+            result?.let {
+                initMovieRecyclerView(it)
+            }
+        })
+
+        movieViewModel.error.observe(this, {
+            Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
+        })
+
+        tvShowViewModel.tvPopular.observe(this, { result ->
+            result?.let {
+                initTVShowRecyclerView(result)
+            }
+
+        })
+
+        tvShowViewModel.error.observe(this, {
+            Toast.makeText(this, it?.statusMessage, Toast.LENGTH_LONG).show()
+        })
+
+        lifecycleScope.launch {
+            movieViewModel.getFavoriteMovie().collectLatest {
+                initFavoriteMovieRecyclerView(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            tvShowViewModel.getFavoriteTVShows().collectLatest {
+                initFavoriteTVRecyclerView(it)
+            }
+        }
+    }
 
     private fun initMovieRecyclerView(movies: List<MovieResult>) {
         movieAdapter = MovieAdapter()
@@ -65,7 +123,8 @@ class HomeActivity : AppCompatActivity() {
         movieAdapter.onItemClickListener = object : OnItemClickListener {
             override fun onItemClick(item: Any, position: Int) {
                 val intent = Intent(this@HomeActivity, DetailMovieActivity::class.java)
-                intent.putExtra(EXTRA_DETAIL_MOVIE, movies[position])
+                intent.putExtra(EXTRA_TYPE, MOVIE)
+                intent.putExtra(EXTRA_ID, movies[position].id)
                 startActivity(intent)
             }
         }
@@ -82,11 +141,37 @@ class HomeActivity : AppCompatActivity() {
         tvShowAdapter.onItemClickListener = object : OnItemClickListener {
             override fun onItemClick(item: Any, position: Int) {
                 val intent = Intent(this@HomeActivity, DetailMovieActivity::class.java)
-                intent.putExtra(ExtraIntent.EXTRA_DETAIL_TV, tvShows[position])
+                intent.putExtra(EXTRA_TYPE, TV_SHOW)
+                intent.putExtra(EXTRA_ID, tvShows[position].id)
                 startActivity(intent)
             }
         }
         tvShowAdapter.setTVShow(tvShows)
+    }
+
+    private fun initFavoriteMovieRecyclerView(favoriteMovie: PagingData<MovieResult>) {
+        favoriteMovieAdapter = FavoriteMovieAdapter()
+        with(activityHomeBinding.rvFavoriteMovie) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
+            adapter = favoriteMovieAdapter
+        }
+        lifecycleScope.launch {
+            favoriteMovieAdapter.submitData(favoriteMovie)
+        }
+
+    }
+
+    private fun initFavoriteTVRecyclerView(favoriteTVShow: PagingData<TVShowResult>) {
+        favoriteTVShowAdapter = FavoriteTVShowAdapter()
+        with(activityHomeBinding.rvFavoriteTV) {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
+            adapter = favoriteTVShowAdapter
+        }
+        lifecycleScope.launch {
+            favoriteTVShowAdapter.submitData(favoriteTVShow)
+        }
     }
 
     override fun onBackPressed() {
