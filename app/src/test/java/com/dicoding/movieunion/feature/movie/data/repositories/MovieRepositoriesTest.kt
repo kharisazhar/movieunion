@@ -57,6 +57,7 @@ class MovieRepositoriesTest {
                     placeholdersEnabled = false
                 )
             )
+            assertNotNull(data)
 
             val actual = tData.load(
                 PagingSource.LoadParams.Refresh(
@@ -65,9 +66,8 @@ class MovieRepositoriesTest {
                     placeholdersEnabled = false
                 )
             )
-
             assertNotNull(actual)
-            assertNotNull(data)
+
             assertEquals(actual, data)
         }
     }
