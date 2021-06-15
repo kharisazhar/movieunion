@@ -19,7 +19,6 @@ class MovieRepositoriesImpl(
     }
 
     override fun getFavoriteMovie(): PagingSource<Int, MovieResult> {
-
         return movieDao.getFavoriteMovie()
     }
 }
